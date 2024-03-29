@@ -37,14 +37,19 @@ load_dotenv()
 
 marvin.settings.openai.api_key = os.getenv("OPENAI_API_KEY")
 
-logging.basicConfig(filename='sidekick.log', encoding='utf-8', level=logging.INFO)
+logging.basicConfig(
+    filename=os.getenv('APP_LOG_FILENAME', 'sidekick.log'),
+    encoding='utf-8',
+    level=getattr(logging, os.getenv('APP_LOG_LEVEL', 'INFO').upper())
+)
+
 logger = logging.getLogger(__name__)
 
-assistant_name = os.getenv('ASSISTANT_NAME', 'Bob')
+assistant_name = os.getenv('APP_ASSISTANT_NAME', 'Bob')
 
 assistant = Assistant(
     name=assistant_name,
-    instructions=os.getenv('ASSISTANT_INSTRUCTIONS', 'You are a helpful AI assistant.'),
+    instructions=os.getenv('APP_ASSISTANT_INSTRUCTIONS', 'You are a helpful AI assistant.'),
     tools=[
         search,
         news,
