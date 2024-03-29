@@ -10,6 +10,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## configuration
+
+```
+cp .env.example .env
+```
+
+Edit the .env file to your taste. An OpenAI API key is required for the AI assistant to function.
+
 ## usage
 
 ```
