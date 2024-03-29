@@ -57,8 +57,19 @@ def images(
         RatelimitException: Inherits from DuckDuckGoSearchException, raised for exceeding API request rate limits.
         TimeoutException: Inherits from DuckDuckGoSearchException, raised for API request timeouts.
     """
-    logger.info("Searching for images: %s, region: %s, safesearch: %s, timelimit: %s, size: %s, color: %s, type_image: %s, layout: %s, license_image: %s, max_results: %s",
-                keywords, region, safesearch, timelimit, size, color, type_image, layout, license_image, max_results)
+    logger.info(
+        "Searching for images: %s, region: %s, safesearch: %s, timelimit: %s, size: %s, color: %s, type_image: %s, layout: %s, license_image: %s, max_results: %s",
+        keywords,
+        region,
+        safesearch,
+        timelimit,
+        size,
+        color,
+        type_image,
+        layout,
+        license_image,
+        max_results,
+    )
     return ddg.images(
         keywords=keywords,
         region=region,
@@ -74,25 +85,30 @@ def images(
 
 
 def search(keywords: str, max_results: int = 5) -> list[dict]:
-    """ Search the internet for the given keywords """
+    """Search the internet for the given keywords"""
     logger.info("Searching for: %s, max_results: %s", keywords, max_results)
     return ddg.text(keywords, max_results)
 
 
 def news(keywords: str, timelimit: str = "w", max_results: int = 5) -> list[dict]:
-    """ Search the internet for news related to the given keywords, within the given time limit"""
-    logger.info("Searching for news: %s, timelimit: %s, max_results: %s", keywords, timelimit, max_results)
+    """Search the internet for news related to the given keywords, within the given time limit"""
+    logger.info(
+        "Searching for news: %s, timelimit: %s, max_results: %s",
+        keywords,
+        timelimit,
+        max_results,
+    )
     return ddg.news(keywords, timelimit=timelimit, max_results=max_results)
 
 
 def visit_url(url: str):
-    """ Fetch the contents of the given URL """
+    """Fetch the contents of the given URL"""
     logger.info("Visiting URL: %s", url)
     return requests.get(url).content.decode()
 
 
 def weather(location: str) -> dict:
-    """ Get the current weather for the given location """
+    """Get the current weather for the given location"""
     logger.info("Getting weather for: %s", location)
     return ddg.text(f"weather {location}", max_results=1)[0]
 
@@ -102,18 +118,20 @@ load_dotenv()
 marvin.settings.openai.api_key = os.getenv("OPENAI_API_KEY")
 
 logging.basicConfig(
-    filename=os.getenv('APP_LOG_FILENAME', 'sidekick.log'),
-    encoding='utf-8',
-    level=getattr(logging, os.getenv('APP_LOG_LEVEL', 'INFO').upper())
+    filename=os.getenv("APP_LOG_FILENAME", "sidekick.log"),
+    encoding="utf-8",
+    level=getattr(logging, os.getenv("APP_LOG_LEVEL", "INFO").upper()),
 )
 
 logger = logging.getLogger(__name__)
 
-assistant_name = os.getenv('APP_ASSISTANT_NAME', 'Bob')
+assistant_name = os.getenv("APP_ASSISTANT_NAME", "Bob")
 
 assistant = Assistant(
     name=assistant_name,
-    instructions=os.getenv('APP_ASSISTANT_INSTRUCTIONS', 'You are a helpful AI assistant.'),
+    instructions=os.getenv(
+        "APP_ASSISTANT_INSTRUCTIONS", "You are a helpful AI assistant."
+    ),
     tools=[
         # CodeInterpreter,
         images,
@@ -121,7 +139,7 @@ assistant = Assistant(
         search,
         visit_url,
         weather,
-    ]
+    ],
 )
 
 thread = Thread()
