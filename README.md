@@ -34,4 +34,5 @@ The AI assistant has access to the following tools:
 * images - image search using duckduckgo.com.
 * news - news search using duckduckgo.com.
 * search - internet search using duckduckgo.com.
+* visit_url - fetch the content at a given URL.
 * weather - weather search using duckduckgo.com.

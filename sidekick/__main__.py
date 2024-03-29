@@ -5,13 +5,14 @@ from typing import Dict, List, Optional
 
 import gradio
 import marvin
+import requests
 
 from dotenv import load_dotenv
 from duckduckgo_search import DDGS
-from marvin.beta.assistants import Assistant, Thread
+from marvin.beta.assistants import Assistant, CodeInterpreter, Thread
 
 
-def chat(message, history):
+def chat(message, _):
     message = thread.add(message)
     thread.run(assistant=assistant)
     return thread.get_messages()[-1].content[0].text.value
@@ -56,7 +57,8 @@ def images(
         RatelimitException: Inherits from DuckDuckGoSearchException, raised for exceeding API request rate limits.
         TimeoutException: Inherits from DuckDuckGoSearchException, raised for API request timeouts.
     """
-    logger.info(f"Searching for images: {keywords}, region: {region}, safesearch: {safesearch}, timelimit: {timelimit}, size: {size}, color: {color}, type_image: {type_image}, layout: {layout}, license_image: {license_image}, max_results: {max_results}")
+    logger.info("Searching for images: %s, region: %s, safesearch: %s, timelimit: %s, size: %s, color: %s, type_image: %s, layout: %s, license_image: %s, max_results: %s",
+                keywords, region, safesearch, timelimit, size, color, type_image, layout, license_image, max_results)
     return ddg.images(
         keywords=keywords,
         region=region,
@@ -73,19 +75,25 @@ def images(
 
 def search(keywords: str, max_results: int = 5) -> list[dict]:
     """ Search the internet for the given keywords """
-    logger.info(f"Searching for: {keywords}, max_results: {max_results}")
+    logger.info("Searching for: %s, max_results: %s", keywords, max_results)
     return ddg.text(keywords, max_results)
 
 
 def news(keywords: str, timelimit: str = "w", max_results: int = 5) -> list[dict]:
     """ Search the internet for news related to the given keywords, within the given time limit"""
-    logger.info(f"Searching for news: {keywords}, timelimit: {timelimit}, max_results: {max_results}")
+    logger.info("Searching for news: %s, timelimit: %s, max_results: %s", keywords, timelimit, max_results)
     return ddg.news(keywords, timelimit=timelimit, max_results=max_results)
+
+
+def visit_url(url: str):
+    """ Fetch the contents of the given URL """
+    logger.info("Visiting URL: %s", url)
+    return requests.get(url).content.decode()
 
 
 def weather(location: str) -> dict:
     """ Get the current weather for the given location """
-    logger.info(f"Getting weather for: {location}")
+    logger.info("Getting weather for: %s", location)
     return ddg.text(f"weather {location}", max_results=1)[0]
 
 
@@ -107,9 +115,11 @@ assistant = Assistant(
     name=assistant_name,
     instructions=os.getenv('APP_ASSISTANT_INSTRUCTIONS', 'You are a helpful AI assistant.'),
     tools=[
+        # CodeInterpreter,
         images,
         news,
         search,
+        visit_url,
         weather,
     ]
 )
