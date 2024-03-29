@@ -1,0 +1,3 @@
+gradio
+marvin
+python-dotenv
