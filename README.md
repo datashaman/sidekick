@@ -23,6 +23,6 @@ Open https://127.0.0.1:7860 in your browser.
 
 The AI assistant has access to the following tools:
 
-* search - basic internet search using duckduckgo.com.
-* news - latest news using duckduckgo.com.
-* weather - current weather using duckduckgo.com.
+* news - news search using duckduckgo.com.
+* search - internet search using duckduckgo.com.
+* weather - weather search using duckduckgo.com.
