@@ -1,3 +1,4 @@
+duckduckgo_search
 gradio
 marvin
 python-dotenv
