@@ -1,3 +1,4 @@
+import logging
 import os
 
 import gradio
@@ -16,22 +17,28 @@ def chat(message, history):
 
 def search(keywords: str, max_results: int = 5) -> list[dict]:
     """ Search the internet for the given keywords """
+    logger.info(f"Searching for: {keywords}, max_results: {max_results}")
     return ddg.text(keywords, max_results)
 
 
 def news(keywords: str, timelimit: str = "w", max_results: int = 5) -> list[dict]:
     """ Search the internet for news related to the given keywords, within the given time limit"""
+    logger.info(f"Searching for news: {keywords}, timelimit: {timelimit}, max_results: {max_results}")
     return ddg.news(keywords, timelimit=timelimit, max_results=max_results)
 
 
 def weather(location: str) -> dict:
     """ Get the current weather for the given location """
+    logger.info(f"Getting weather for: {location}")
     return ddg.text(f"weather {location}", max_results=1)[0]
 
 
 load_dotenv()
 
 marvin.settings.openai.api_key = os.getenv("OPENAI_API_KEY")
+
+logging.basicConfig(filename='sidekick.log', encoding='utf-8', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 assistant_name = os.getenv('ASSISTANT_NAME', 'Bob')
 

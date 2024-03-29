@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 ```
 source .venv/bin/activate
-python app.py
+python -m sidekick
 ```
 
 Open https://127.0.0.1:7860 in your browser.

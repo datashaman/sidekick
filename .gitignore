@@ -1,2 +1,4 @@
 /.env
 /.venv/
+/sidekick.log
+__pycache__/
