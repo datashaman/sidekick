@@ -1,3 +1,7 @@
+"""
+A simple chatbot that uses the DuckDuckGo API to search the internet for images, news, and weather.
+Uses marvin and gradio for the chatbot functionality.
+"""
 import logging
 import os
 
@@ -9,10 +13,11 @@ import requests
 
 from dotenv import load_dotenv
 from duckduckgo_search import DDGS
-from marvin.beta.assistants import Assistant, CodeInterpreter, Thread
+from marvin.beta.assistants import Assistant, Thread
 
 
 def chat(message, _):
+    """Chat with the assistant"""
     message = thread.add(message)
     thread.run(assistant=assistant)
     return thread.get_messages()[-1].content[0].text.value
@@ -104,7 +109,7 @@ def news(keywords: str, timelimit: str = "w", max_results: int = 5) -> list[dict
 def visit_url(url: str):
     """Fetch the contents of the given URL"""
     logger.info("Visiting URL: %s", url)
-    return requests.get(url).content.decode()
+    return requests.get(url, timeout=(3,10)).content.decode()
 
 
 def weather(location: str) -> dict:
@@ -133,7 +138,6 @@ assistant = Assistant(
         "APP_ASSISTANT_INSTRUCTIONS", "You are a helpful AI assistant."
     ),
     tools=[
-        # CodeInterpreter,
         images,
         news,
         search,
