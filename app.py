@@ -33,8 +33,10 @@ load_dotenv()
 
 marvin.settings.openai.api_key = os.getenv("OPENAI_API_KEY")
 
+assistant_name = os.getenv('ASSISTANT_NAME', 'Bob')
+
 assistant = Assistant(
-    name=os.getenv('ASSISTANT_NAME', 'Bob'),
+    name=assistant_name,
     instructions=os.getenv('ASSISTANT_INSTRUCTIONS', 'You are a helpful AI assistant.'),
     tools=[
         search,
@@ -47,4 +49,12 @@ thread = Thread()
 
 ddg = DDGS()
 
-gradio.ChatInterface(chat).launch()
+gradio.ChatInterface(
+    fn=chat,
+    examples=[
+        "Hello",
+        "What is the latest news on the war in Ukraine?",
+        "What is the weather in Cape Town?",
+    ],
+    title=f"Chat with {assistant_name}",
+).launch()
