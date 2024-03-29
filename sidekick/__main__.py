@@ -1,6 +1,8 @@
 import logging
 import os
 
+from typing import Dict, List, Optional
+
 import gradio
 import marvin
 
@@ -13,6 +15,60 @@ def chat(message, history):
     message = thread.add(message)
     thread.run(assistant=assistant)
     return thread.get_messages()[-1].content[0].text.value
+
+
+def images(
+    keywords: str,
+    region: str = "wt-wt",
+    safesearch: str = "moderate",
+    timelimit: Optional[str] = None,
+    size: Optional[str] = None,
+    color: Optional[str] = None,
+    type_image: Optional[str] = None,
+    layout: Optional[str] = None,
+    license_image: Optional[str] = None,
+    max_results: Optional[int] = None,
+) -> List[Dict[str, str]]:
+    """DuckDuckGo images search. Query params: https://duckduckgo.com/params.
+
+    Args:
+        keywords: keywords for query.
+        region: wt-wt, us-en, uk-en, ru-ru, etc. Defaults to "wt-wt", which means worldwide.
+        safesearch: on, moderate, off. Defaults to "moderate".
+        timelimit: Day, Week, Month, Year. Defaults to None.
+        size: Small, Medium, Large, Wallpaper. Defaults to None.
+        color: color, Monochrome, Red, Orange, Yellow, Green, Blue,
+            Purple, Pink, Brown, Black, Gray, Teal, White. Defaults to None.
+        type_image: photo, clipart, gif, transparent, line.
+            Defaults to None.
+        layout: Square, Tall, Wide. Defaults to None.
+        license_image: any (All Creative Commons), Public (PublicDomain),
+            Share (Free to Share and Use), ShareCommercially (Free to Share and Use Commercially),
+            Modify (Free to Modify, Share, and Use), ModifyCommercially (Free to Modify, Share, and
+            Use Commercially). Defaults to None.
+        max_results: max number of results. If None, returns results only from the first response. Defaults to None.
+
+    Returns:
+        List of dictionaries with images search results.
+
+    Raises:
+        DuckDuckGoSearchException: Base exception for duckduckgo_search errors.
+        RatelimitException: Inherits from DuckDuckGoSearchException, raised for exceeding API request rate limits.
+        TimeoutException: Inherits from DuckDuckGoSearchException, raised for API request timeouts.
+    """
+    logger.info(f"Searching for images: {keywords}, region: {region}, safesearch: {safesearch}, timelimit: {timelimit}, size: {size}, color: {color}, type_image: {type_image}, layout: {layout}, license_image: {license_image}, max_results: {max_results}")
+    return ddg.images(
+        keywords=keywords,
+        region=region,
+        safesearch=safesearch,
+        timelimit=timelimit,
+        size=size,
+        color=color,
+        type_image=type_image,
+        layout=layout,
+        license_image=license_image,
+        max_results=max_results,
+    )
 
 
 def search(keywords: str, max_results: int = 5) -> list[dict]:
@@ -51,8 +107,9 @@ assistant = Assistant(
     name=assistant_name,
     instructions=os.getenv('APP_ASSISTANT_INSTRUCTIONS', 'You are a helpful AI assistant.'),
     tools=[
-        search,
+        images,
         news,
+        search,
         weather,
     ]
 )
